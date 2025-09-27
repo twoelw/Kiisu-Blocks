@@ -1,0 +1,3 @@
+Blink Demo
+
+A minimal example that toggles an LED style block and demonstrates timing constructs. Shows how to use loops, delays, and a manifest block to define application metadata.

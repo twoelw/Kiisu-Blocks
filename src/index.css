@@ -1,0 +1,350 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Cyberpunk IDE Design System - Dark Purple Theme
+All colors MUST be HSL for consistency.
+*/
+
+@layer base {
+  :root {
+    /* Cyberpunk Dark Theme */
+    --background: 240 10% 3.9%;
+    --foreground: 280 100% 85%;
+
+    --card: 240 8% 7%;
+    --card-foreground: 280 90% 90%;
+
+    --popover: 240 8% 6%;
+    --popover-foreground: 280 90% 90%;
+
+    /* Purple Neon Primary */
+    --primary: 270 91% 65%;
+    --primary-foreground: 240 10% 3.9%;
+    --primary-glow: 270 91% 75%;
+
+    /* Dark Secondary */
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 280 80% 85%;
+
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 5% 64.9%;
+
+    /* Cyan Accent */
+    --accent: 174 100% 50%;
+    --accent-foreground: 240 10% 3.9%;
+    --accent-glow: 174 100% 60%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 240 6% 15%;
+    --input: 240 8% 10%;
+    --ring: 270 91% 65%;
+
+    --radius: 0.75rem;
+
+    /* Cyberpunk Specific Colors */
+    --cyber-grid: 240 5% 8%;
+    --cyber-panel: 240 8% 5%;
+    --cyber-highlight: 318 100% 70%;
+    --neon-green: 120 100% 50%;
+    --neon-blue: 200 100% 60%;
+    
+    /* Gradients */
+    --gradient-cyber: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+    --gradient-panel: linear-gradient(180deg, hsl(var(--card)), hsl(var(--cyber-panel)));
+    --gradient-border: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--accent)));
+    
+    /* Shadows & Glows */
+    --glow-primary: 0 0 20px hsl(var(--primary) / 0.4);
+    --glow-accent: 0 0 15px hsl(var(--accent) / 0.3);
+    --shadow-cyber: 0 8px 32px -8px hsl(240 10% 3.9% / 0.8);
+    
+    /* Animations */
+    --transition-cyber: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --pulse-glow: pulse-glow 2s ease-in-out infinite alternate;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Enhanced cyberpunk theme for dark mode compatibility */
+  .dark {
+    --primary-glow: 270 91% 80%;
+    --accent-glow: 174 100% 70%;
+    --glow-primary: 0 0 25px hsl(var(--primary) / 0.5);
+    --glow-accent: 0 0 20px hsl(var(--accent) / 0.4);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-mono;
+    background-image: 
+      radial-gradient(circle at 20% 50%, hsl(var(--primary) / 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(var(--accent) / 0.06) 0%, transparent 50%);
+  }
+
+  body.loading, html.loading {
+    overflow: hidden;
+    height: 100%;
+  }
+}
+
+@layer utilities {
+  .cyber-border {
+    border: 1px solid hsl(var(--border));
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1), transparent);
+    box-shadow: 
+      0 0 0 1px hsl(var(--primary) / 0.2),
+      inset 0 1px 0 hsl(var(--primary) / 0.1);
+  }
+  
+  .cyber-glow {
+    box-shadow: var(--glow-primary);
+    transition: var(--transition-cyber);
+  }
+  
+  .cyber-glow:hover {
+    box-shadow: var(--glow-primary), 0 0 30px hsl(var(--primary) / 0.2);
+  }
+  
+  .neon-text {
+    color: hsl(var(--primary));
+    text-shadow: 
+      0 0 5px hsl(var(--primary) / 0.5),
+      0 0 10px hsl(var(--primary) / 0.3);
+  }
+
+  /* Themed scrollbars */
+  .scrollbar-cyber {
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+  }
+  /* WebKit */
+  .scrollbar-cyber::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .scrollbar-cyber::-webkit-scrollbar-track {
+    background: hsl(var(--card));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+  }
+  .scrollbar-cyber::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.4), hsl(var(--accent) / 0.4));
+    border: 1px solid hsl(var(--primary));
+    border-radius: var(--radius);
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.4) inset;
+  }
+  .scrollbar-cyber::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.6), hsl(var(--accent) / 0.6));
+  }
+}
+
+/* Blockly theming to match cyber plane */
+.blocklySvg {
+  background: transparent !important;
+}
+
+.blocklyMainBackground {
+  fill: transparent !important;
+}
+
+.blocklyScrollbarVertical, .blocklyScrollbarHorizontal {
+  stroke: hsl(var(--primary) / 0.4) !important;
+}
+
+.blocklyScrollbarHandle {
+  fill: hsl(var(--primary) / 0.2) !important;
+}
+
+/* Toolbox and flyout colors */
+.blocklyToolboxDiv {
+  background: linear-gradient(135deg, hsl(var(--card) / 0.4), transparent) !important;
+  border-right: 1px solid hsl(var(--border));
+}
+
+.blocklyTreeRow {
+  background: transparent !important;
+}
+
+.blocklyTreeRow:hover {
+  background: hsl(var(--primary) / 0.08) !important;
+}
+
+.blocklyTreeSelected {
+  background: hsl(var(--primary) / 0.14) !important;
+}
+
+.blocklyFlyoutBackground,
+.blocklyFlyout > .blocklyFlyoutBackground,
+svg .blocklyFlyoutBackground {
+  fill: hsl(var(--card) / 0.4) !important;
+  fill-opacity: 1 !important;
+}
+
+.blocklyTreeLabel {
+  fill: hsl(var(--foreground)) !important;
+}
+
+.blocklyFlyoutLabelText {
+  fill: hsl(var(--foreground)) !important;
+}
+
+/* Make checkbox fields compact and square, with a bit of spacing */
+.blocklyCheckbox {
+  width: 12px !important;
+  height: 12px !important;
+}
+.blocklyEditableText[display="checkbox"] + .blocklyFieldLabel,
+.blocklyEditableText[display="checkbox"] {
+  margin-left: 4px !important;
+}
+
+/* Inputs/text boxes inside blocks should be black text for readability */
+.blocklyHtmlInput,
+.blocklyFieldTextInput input,
+.blocklyFieldNumber input,
+foreignObject .blocklyTextInput {
+  color: #000 !important;
+}
+
+/* Note: Do NOT override .blocklyText fill globally to keep default block text color */
+
+.blocklyFlyout .blocklyFlyoutButton > rect {
+  fill: hsl(var(--primary) / 0.2) !important;
+  stroke: hsl(var(--primary)) !important;
+}
+
+/* Hide flyout scrollbars to avoid leftover visuals when closing categories */
+.blocklyFlyout .blocklyScrollbarVertical,
+.blocklyFlyout .blocklyScrollbarHorizontal,
+.blocklyFlyout .blocklyScrollbarHandle,
+.blocklyFlyout .blocklyScrollbarBackground {
+  display: none !important;
+}
+
+/* Some Blockly versions append a standalone SVG for flyout scrollbars; hide explicitly */
+svg.blocklyFlyoutScrollbar,
+.blocklyFlyoutScrollbar {
+  display: none !important;
+}
+
+/* Style modern toolbox container (Blocky v12+) */
+.blocklyToolbox {
+  background: linear-gradient(135deg, hsl(var(--card) / 0.4), transparent) !important;
+  border-right: 1px solid hsl(var(--border));
+}
+
+.blocklyToolboxCategoryLabel {
+  color: hsl(var(--foreground)) !important;
+}
+
+.blocklyToolboxCategoryContainer[aria-selected="true"] .blocklyToolboxCategory {
+  background: hsl(var(--primary) / 0.14) !important;
+}
+
+.blocklyToolboxCategoryContainer .blocklyToolboxCategory:hover {
+  background: hsl(var(--primary) / 0.08) !important;
+}
+
+@keyframes pulse-glow {
+  0% { 
+    box-shadow: 0 0 5px hsl(var(--primary) / 0.3);
+  }
+  100% { 
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.6), 0 0 30px hsl(var(--primary) / 0.3);
+  }
+}
+
+/* Matrix Loader Styles */
+#app-loader {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at 40% 40%, hsl(var(--primary)/0.15), transparent 70%),
+              linear-gradient(180deg, hsl(var(--background)), hsl(var(--background)) 60%, hsl(var(--background) / 0.9));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 9999;
+  color: hsl(var(--primary));
+  transition: opacity .6s ease, filter .6s ease;
+  will-change: opacity, filter;
+}
+
+#app-loader.fade-out {
+  opacity: 0;
+  filter: blur(2px) saturate(0.5);
+  pointer-events: none;
+}
+
+#app-loader.fade-out.done { display:none; }
+
+#app-loader canvas#matrix-canvas {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+
+#app-loader .loader-brand {
+  position:relative;
+  text-align:center;
+  mix-blend-mode:screen;
+  animation: loaderPulse 2.2s ease-in-out infinite;
+  padding:2rem 2.5rem;
+  border:1px solid hsl(var(--primary)/0.4);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, hsl(var(--primary)/0.12), hsl(var(--accent)/0.08));
+  backdrop-filter: blur(6px) brightness(1.2);
+  box-shadow: 0 0 0 1px hsl(var(--primary)/0.4), 0 0 20px hsl(var(--primary)/0.4), 0 0 32px hsl(var(--accent)/0.25);
+}
+
+@keyframes loaderPulse {
+  0%,100% { box-shadow: 0 0 0 1px hsl(var(--primary)/0.4), 0 0 16px hsl(var(--primary)/0.3), 0 0 24px hsl(var(--accent)/0.15); }
+  50% { box-shadow: 0 0 0 1px hsl(var(--primary)/0.5), 0 0 28px hsl(var(--primary)/0.5), 0 0 40px hsl(var(--accent)/0.3); }
+}
+
+#app-loader .loader-title {
+  display:block;
+  font-size: clamp(1.25rem, 2vw + 0.5rem, 2.75rem);
+  letter-spacing: 0.08em;
+  font-weight:600;
+  text-shadow:0 0 8px hsl(var(--primary)/0.6), 0 0 18px hsl(var(--accent)/0.4);
+}
+
+#app-loader .loader-sub {
+  display:block;
+  margin-top:.5rem;
+  font-size:.85rem;
+  color:hsl(var(--accent));
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  opacity:.85;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app-loader canvas#matrix-canvas { display:none; }
+  #app-loader .loader-brand { animation:none; }
+}

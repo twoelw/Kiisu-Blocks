@@ -1,0 +1,379 @@
+{
+  "blocks": {
+    "languageVersion": 0,
+    "blocks": [
+      {
+        "type": "flipper_app",
+        "id": "S9e^ZQwWlIq|H=lLYzKU",
+        "x": 40,
+        "y": 40,
+        "inputs": {
+          "SETUP": {
+            "block": {
+              "type": "variables_set",
+              "id": "+Ko=rF{L?Ym+ZuTRcAkP",
+              "fields": {
+                "VAR": {
+                  "id": "9}GK%^j?{x`vu#uwFF{M"
+                }
+              },
+              "inputs": {
+                "VALUE": {
+                  "block": {
+                    "type": "logic_boolean",
+                    "id": "G{LfTB!90NjXm6P_pQS]",
+                    "fields": {
+                      "BOOL": "FALSE"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "DRAW": {
+            "block": {
+              "type": "flipper_canvas_clear",
+              "id": "}.KOUj1~}iOL3yFGsU7h",
+              "next": {
+                "block": {
+                  "type": "flipper_canvas_set_font",
+                  "id": "xIPBZpv0F01.~fC_#r^r",
+                  "fields": {
+                    "FONT": "FontPrimary"
+                  },
+                  "next": {
+                    "block": {
+                      "type": "controls_if",
+                      "id": "A#O52kn7LJrK=l5.i9sT",
+                      "inputs": {
+                        "IF0": {
+                          "block": {
+                            "type": "variables_get",
+                            "id": "tlmSd/806eI=yM5bI;pY",
+                            "fields": {
+                              "VAR": {
+                                "id": "9}GK%^j?{x`vu#uwFF{M"
+                              }
+                            }
+                          }
+                        },
+                        "DO0": {
+                          "block": {
+                            "type": "flipper_canvas_draw_text",
+                            "id": ")6Flq#3y]Wgw-h#y~?gh",
+                            "fields": {
+                              "XOR": false
+                            },
+                            "inputs": {
+                              "X": {
+                                "block": {
+                                  "type": "math_number",
+                                  "id": "A^=#NjBy/{izox[9;o)]",
+                                  "fields": {
+                                    "NUM": 10
+                                  }
+                                }
+                              },
+                              "Y": {
+                                "block": {
+                                  "type": "math_number",
+                                  "id": "Vif+*],*y2fnK..cOeU#",
+                                  "fields": {
+                                    "NUM": 20
+                                  }
+                                }
+                              },
+                              "TEXT": {
+                                "block": {
+                                  "type": "text",
+                                  "id": "`7:cKPedop1$/V5(U{`J",
+                                  "fields": {
+                                    "TEXT": "Hello from Kiisu Blocks!"
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "flipper_canvas_draw_text",
+                                "id": "SX?Tq2iYkFTL6YD/#1cX",
+                                "fields": {
+                                  "XOR": false
+                                },
+                                "inputs": {
+                                  "X": {
+                                    "block": {
+                                      "type": "math_number",
+                                      "id": "k^,p^v]gmjntFpz0c4=y",
+                                      "fields": {
+                                        "NUM": 10
+                                      }
+                                    }
+                                  },
+                                  "Y": {
+                                    "block": {
+                                      "type": "math_number",
+                                      "id": "WB%K3BX+4cI?/`^tog)o",
+                                      "fields": {
+                                        "NUM": 35
+                                      }
+                                    }
+                                  },
+                                  "TEXT": {
+                                    "block": {
+                                      "type": "text",
+                                      "id": "GAJf`=/F7:^[g~HouwAB",
+                                      "fields": {
+                                        "TEXT": "Press OK to toggle sound"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "controls_if",
+                          "id": "rAS3dZn(46n{#/mnt|`-",
+                          "inputs": {
+                            "IF0": {
+                              "block": {
+                                "type": "logic_negate",
+                                "id": "wItXd{qD3+5Lt2/2CAl@",
+                                "inputs": {
+                                  "BOOL": {
+                                    "block": {
+                                      "type": "variables_get",
+                                      "id": "q,#LWRx:Lx]:%wB]3HML",
+                                      "fields": {
+                                        "VAR": {
+                                          "id": "9}GK%^j?{x`vu#uwFF{M"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "DO0": {
+                              "block": {
+                                "type": "flipper_canvas_draw_text",
+                                "id": "Tb2OmAuI$xFeoC%S!OW}",
+                                "fields": {
+                                  "XOR": false
+                                },
+                                "inputs": {
+                                  "X": {
+                                    "block": {
+                                      "type": "math_number",
+                                      "id": "~`wV$*JyBPcD4P[)PA5Q",
+                                      "fields": {
+                                        "NUM": 10
+                                      }
+                                    }
+                                  },
+                                  "Y": {
+                                    "block": {
+                                      "type": "math_number",
+                                      "id": "GQ=,Qt#YN{bMkT=pT`r3",
+                                      "fields": {
+                                        "NUM": 50
+                                      }
+                                    }
+                                  },
+                                  "TEXT": {
+                                    "block": {
+                                      "type": "text",
+                                      "id": "}nY~hK^01Kgkz**=6|/~",
+                                      "fields": {
+                                        "TEXT": "Sound: OFF"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "controls_if",
+                              "id": "hL;KXg{vPKLs{^ZH3WWy",
+                              "inputs": {
+                                "IF0": {
+                                  "block": {
+                                    "type": "variables_get",
+                                    "id": "@gtqWk%]6aom{GP^@k5u",
+                                    "fields": {
+                                      "VAR": {
+                                        "id": "9}GK%^j?{x`vu#uwFF{M"
+                                      }
+                                    }
+                                  }
+                                },
+                                "DO0": {
+                                  "block": {
+                                    "type": "flipper_canvas_draw_text",
+                                    "id": "yC^f}k$vJ-e;wd-ciOxo",
+                                    "fields": {
+                                      "XOR": false
+                                    },
+                                    "inputs": {
+                                      "X": {
+                                        "block": {
+                                          "type": "math_number",
+                                          "id": "463{4oC;A+{NzJu%A4/a",
+                                          "fields": {
+                                            "NUM": 10
+                                          }
+                                        }
+                                      },
+                                      "Y": {
+                                        "block": {
+                                          "type": "math_number",
+                                          "id": "C9r){o7u}f-eQ{Z=244G",
+                                          "fields": {
+                                            "NUM": 50
+                                          }
+                                        }
+                                      },
+                                      "TEXT": {
+                                        "block": {
+                                          "type": "text",
+                                          "id": "kJc+pqTTEZMf5y4QZd:^",
+                                          "fields": {
+                                            "TEXT": "Sound: ON"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "INPUT": {
+            "block": {
+              "type": "flipper_input_if_key_type",
+              "id": "Z*ujJGlYLR8gt/p9JZH!",
+              "fields": {
+                "TYPE": "InputTypeShort",
+                "KEY": "InputKeyOk"
+              },
+              "inputs": {
+                "DO": {
+                  "block": {
+                    "type": "controls_if",
+                    "id": "ou~E1y@L*xDQ@R|3nUl1",
+                    "inputs": {
+                      "IF0": {
+                        "block": {
+                          "type": "variables_get",
+                          "id": "}60pn87^J7BmD3|sZG,F",
+                          "fields": {
+                            "VAR": {
+                              "id": "9}GK%^j?{x`vu#uwFF{M"
+                            }
+                          }
+                        }
+                      },
+                      "DO0": {
+                        "block": {
+                          "type": "flipper_notify_sequence",
+                          "id": "P:f}qYp/p!TH!p:=Hh#*",
+                          "fields": {
+                            "SEQ": "sequence_success"
+                          }
+                        }
+                      },
+                      "ELSE": {
+                        "block": {
+                          "type": "flipper_notify_sequence",
+                          "id": "mn/I1ii@YGW9PBJc9yNy",
+                          "fields": {
+                            "SEQ": "sequence_error"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "variables_set",
+                        "id": "qLE^7Nv#!x1tfLwYHUj+",
+                        "fields": {
+                          "VAR": {
+                            "id": "9}GK%^j?{x`vu#uwFF{M"
+                          }
+                        },
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "logic_negate",
+                              "id": "e}Q3~$KZ_Oq)vXer*?#Y",
+                              "inputs": {
+                                "BOOL": {
+                                  "block": {
+                                    "type": "variables_get",
+                                    "id": "N^Eq9]5%9Id!fKj.jJ=.",
+                                    "fields": {
+                                      "VAR": {
+                                        "id": "9}GK%^j?{x`vu#uwFF{M"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "flipper_request_redraw",
+                            "id": "!/vww]M?H#S6I^2Nz1A8"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "type": "flipper_manifest",
+        "id": "D+cdNVk~Ec|ZW)*,jwR{",
+        "x": 670,
+        "y": 30,
+        "fields": {
+          "APPID": "simple_toggle",
+          "NAME": "Simple Toggle Demo",
+          "APPTYPE": "FlipperAppType.EXTERNAL",
+          "ICON": "",
+          "CATEGORY": "General",
+          "AUTHOR": "Kiisu Blocks",
+          "VERSION": "0.1.0",
+          "STACK": 4096,
+          "DESCRIPTION": "Simple beginner demo: toggle sound on/off with OK button"
+        }
+      }
+    ]
+  },
+  "variables": [
+    {
+      "name": "sound_enabled",
+      "id": "9}GK%^j?{x`vu#uwFF{M"
+    }
+  ]
+}

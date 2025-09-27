@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="loading">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiisu Blocks</title>
+
+  <meta property="og:title" content="Kiisu Blocks" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <style>
+      /* Critical inline styles to avoid white flash & scrollbars during boot */
+      html.loading, body.loading { margin:0; padding:0; overflow:hidden; height:100%; background:#050507; }
+      #app-loader { position:fixed; inset:0; background:#050507; z-index:9999; }
+      #app-loader canvas { width:100%; height:100%; display:block; }
+    </style>
+  </head>
+
+  <body class="loading">
+    <!-- Initial Matrix Loader -->
+    <div id="app-loader" aria-hidden="true">
+      <canvas id="matrix-canvas"></canvas>
+    </div>
+    <div id="root"></div>
+  <script>
+      // Lightweight matrix rain animation bootstrapped before the bundle.
+      (function(){
+        const canvas = document.getElementById('matrix-canvas');
+        if(!canvas) return; // safety
+        const ctx = canvas.getContext('2d');
+        let width, height, columns;
+        const glyphs = 'ｱｶｻﾀﾅﾊﾏﾔﾗﾜ0123456789'; // shorter, stylistic
+        let drops = [];
+        let speeds = [];
+        function resize(){
+          const dpr = Math.min(2, window.devicePixelRatio || 1); // cap for perf
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.style.width = width + 'px';
+          canvas.style.height = height + 'px';
+          // Reset transform before resizing & scaling to avoid compounded scales
+          if(ctx) ctx.setTransform(1,0,0,1,0,0);
+          canvas.width = Math.floor(width * dpr);
+          canvas.height = Math.floor(height * dpr);
+          if(ctx) ctx.scale(dpr, dpr);
+          columns = Math.floor(width / 16);
+          drops = Array.from({length: columns}, () => Math.random()*height/16);
+          // Assign a slower speed (range ~0.05 - 0.22 rows per frame)
+          speeds = Array.from({length: columns}, () => 0.05 + Math.random()*0.17);
+        }
+        resize();
+        window.addEventListener('resize', resize);
+        const primary = getComputedStyle(document.documentElement).getPropertyValue('--primary') || '270 91% 65%';
+        const primaryHue = primary.trim();
+        function draw(){
+          if(!ctx) return;
+            // Increase trail persistence (lower alpha clears less each frame)
+            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            ctx.fillRect(0,0,width,height);
+            ctx.font = '14px monospace';
+            for(let i=0;i<drops.length;i++){
+              const text = glyphs[Math.floor(Math.random()*glyphs.length)];
+              // Purple glow gradient: vary lightness & alpha slightly for depth
+              const alpha = 0.5 + Math.random()*0.35; // softer overall
+              // Extract HSL components to tweak lightness
+              // primaryHue already formatted like: 270 91% 65%
+              const parts = primaryHue.split(' ');
+              let h = parts[0], s = parts[1], l = parts[2];
+              // Adjust lightness randomly within +/-8%
+              const baseL = parseFloat(l);
+              const jitter = (Math.random()*16 - 8); // -8 to +8
+              const newL = Math.min(95, Math.max(35, baseL + jitter));
+              ctx.fillStyle = `hsl(${h} ${s} ${newL}% / ${alpha})`;
+              const x = i*16;
+              const y = drops[i]*16;
+              ctx.fillText(text, x, y);
+              if(y > height && Math.random() > 0.98){
+                drops[i] = 0;
+              }
+              drops[i] += speeds[i];
+            }
+          if(!document.body.classList.contains('loader-fade-complete')){
+            requestAnimationFrame(draw);
+          }
+        }
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(!prefersReduced) requestAnimationFrame(draw);
+      })();
+      window.__kiisuLoaderStart = performance.now();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
