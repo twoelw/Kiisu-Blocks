@@ -313,59 +313,15 @@ const BlocklyWorkspace = ({ onCompile }: Props) => {
     registerWorkspace(ws);
     workspaceRef.current = ws;
 
-    // Load saved workspace or starter blocks
-    // Priority order:
-    // 1. Explicit pendingWorkspace (queued imports while editor not mounted)
-    // 2. Pending demo selection
-    // 3. Saved prior workspace
-    let pendingLoaded = false;
-    try {
-      const queuedRaw = localStorage.getItem('kiisu.blocks.pendingWorkspace');
-      if (queuedRaw) {
-        try {
-          const queued = JSON.parse(queuedRaw) as { raw?: string };
-          if (queued?.raw) {
-            const parsed = JSON.parse(queued.raw);
-            (Blockly as any).serialization?.workspaces?.load?.(parsed, ws);
-            pendingLoaded = true;
-            localStorage.setItem('kiisu.blocks.workspace', queued.raw);
-            localStorage.removeItem('kiisu.blocks.pendingWorkspace');
-            window.dispatchEvent(new CustomEvent('kiisu.blocks.generate'));
-          }
-        } catch { /* ignore queued parse issues */ }
-      }
-    } catch { /* ignore */ }
-    if (!pendingLoaded) {
-      try {
-        const pendingRaw = localStorage.getItem('kiisu.blocks.pendingDemo');
-        if (pendingRaw) {
-          const pending = JSON.parse(pendingRaw) as { slug?: string; raw?: string };
-          if (pending?.raw) {
-            try {
-              const parsed = JSON.parse(pending.raw);
-              (Blockly as any).serialization?.workspaces?.load?.(parsed, ws);
-              pendingLoaded = true;
-              localStorage.setItem('kiisu.blocks.workspace', pending.raw);
-              localStorage.removeItem('kiisu.blocks.pendingDemo');
-              window.dispatchEvent(new CustomEvent('kiisu.blocks.generate'));
-            } catch { /* ignore bad pending demo */ }
-          }
-        }
-      } catch { /* ignore */ }
-    }
-
-  const saved = !pendingLoaded && localStorage.getItem("kiisu.blocks.workspace");
-  if (!pendingLoaded && saved) {
+    // Simplified load: try existing saved workspace; otherwise seed starter template.
+    const saved = localStorage.getItem("kiisu.blocks.workspace");
+    if (saved) {
       try {
         const state = JSON.parse(saved);
-        (Blockly as unknown as { serialization?: { workspaces?: { load?: (state: unknown, ws: Blockly.Workspace) => void } } }).serialization?.workspaces?.load?.(state, ws);
-      } catch {
-        // ignore parse errors and fall back to default
-      }
-  } else if (!pendingLoaded && !saved) {
-      // Clear any existing saved workspace to load the new demo
-      localStorage.removeItem("kiisu.blocks.workspace");
-      
+        (Blockly as any).serialization?.workspaces?.load?.(state, ws);
+      } catch { /* ignore parse errors; fall through to starter */ }
+    }
+    if (!saved) {
       const initialState = {
         variables: [
           { id: "br", name: "brightness", type: "" }

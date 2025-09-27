@@ -7,6 +7,7 @@ import BlocklyWorkspace from "./BlocklyWorkspace";
 import FileExplorer from "./FileExplorer";
 import CompilePage from "./CompilePage";
 import DemoPage from "./DemoPage";
+import { loadWorkspaceFromJson } from "@/lib/workspace-export";
 
 declare global {
   interface Window { ufbt: { openItem: (p: string) => Promise<{ opened: boolean; error?: string }> } }
@@ -117,46 +118,53 @@ const KiisuBlocks = () => {
     }
   };
 
-  const renderMainContent = () => {
-    switch (activeTab) {
-      case "projects":
-        return <ProjectsListView onImport={handleProjectImport} />;
-      
-      case "compile":
-        return <CompilePage />;
-      case "demo":
-        return <DemoPage onLoad={(slug, raw) => {
-          try {
-            localStorage.setItem('kiisu.blocks.pendingDemo', JSON.stringify({ slug, raw, ts: Date.now() }));
-          } catch { /* ignore */ }
-          setActiveTab('editor');
-        }} />;
-        
-      case "manager":
-        return (
-          <div className="flex-1 p-8 flex items-center justify-center">
-            <div className="text-center space-y-4">
-              <h2 className="text-2xl font-bold neon-text">File Manager</h2>
-            </div>
-          </div>
-        );
-        
-      case "editor":
-      default:
-        return (
-          <div className="flex h-full">
-            <BlocklyWorkspace onCompile={() => setActiveTab("compile")} />
-            <FileExplorer />
-          </div>
-        );
-    }
-  };
-
   return (
     <div className="h-screen flex flex-col bg-background">
       <IDEHeader activeTab={activeTab} onTabChange={setActiveTab} />
-  <div className="flex-1 min-h-0 overflow-y-auto">
-        {renderMainContent()}
+      <div className="flex-1 min-h-0 overflow-hidden relative">
+        {/* Always-mounted editor/workspace layer */}
+        <div className={activeTab === 'editor' ? 'absolute inset-0 flex' : 'absolute inset-0 flex pointer-events-none opacity-0'}>
+          <BlocklyWorkspace onCompile={() => setActiveTab("compile")} />
+          <FileExplorer />
+        </div>
+
+        {/* Projects */}
+        {activeTab === 'projects' && (
+          <div className="absolute inset-0 overflow-y-auto">
+            <ProjectsListView onImport={handleProjectImport} />
+          </div>
+        )}
+
+        {/* Compile */}
+        {activeTab === 'compile' && (
+          <div className="absolute inset-0 overflow-y-auto">
+            <CompilePage />
+          </div>
+        )}
+
+        {/* Demo Page */}
+        {activeTab === 'demo' && (
+          <div className="absolute inset-0 overflow-y-auto">
+            <DemoPage onLoad={(_slug, raw) => {
+              // With always-mounted workspace we can load immediately.
+              const result = loadWorkspaceFromJson(raw);
+              if (!result.ok) {
+                console.warn('[Demo load] failed', result.error);
+              }
+              setActiveTab('editor');
+            }} />
+          </div>
+        )}
+
+        {/* File Manager placeholder */}
+        {activeTab === 'manager' && (
+          <div className="absolute inset-0 overflow-y-auto flex items-center justify-center p-8">
+            <div className="text-center space-y-4">
+              <h2 className="text-2xl font-bold neon-text">File Manager</h2>
+              <p className="text-muted-foreground text-sm">(Coming soon)</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

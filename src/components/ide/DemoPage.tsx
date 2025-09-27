@@ -1,6 +1,5 @@
 import { listDemos, getDemoWorkspace } from '@/lib/demos';
 import { useToast } from '@/hooks/use-toast';
-import { loadWorkspaceFromJson } from '@/lib/workspace-export';
 import { useEffect, useState } from 'react';
 
 interface DemoPageProps { onLoad: (slug: string, raw: string) => void }
