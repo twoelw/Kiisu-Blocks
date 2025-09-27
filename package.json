@@ -99,11 +99,17 @@
       "dist-electron/**",
       "package.json"
     ],
-    "extraResources": [],
+    "extraResources": [
+      {
+        "from": "icons/favicon.ico",
+        "to": "favicon.ico"
+      }
+    ],
     "directories": {
       "buildResources": "build"
     },
     "win": {
+      "icon": "icons/favicon.ico",
       "target": [
         {
           "target": "nsis",

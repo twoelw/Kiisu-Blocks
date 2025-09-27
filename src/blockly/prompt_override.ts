@@ -10,7 +10,8 @@ interface DialogLike {
 /** Install a custom prompt override replacing the default window.prompt based implementation. */
 export function installPromptOverride() {
   // Try known dialog entry points (Blockly 7+ uses dialog, some older builds exposed Dialog)
-  const anyDialog: DialogLike | undefined = (Blockly as any).dialog || (Blockly as any).Dialog;
+  // Access fallback legacy Dialog via bracket to avoid bundler warning for non-exported symbol.
+  const anyDialog: DialogLike | undefined = (Blockly as any).dialog || (Blockly as any)['Dialog'];
   if (!anyDialog) return;
   if (anyDialog.__kiisuPromptInstalled) return;
 

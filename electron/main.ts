@@ -11,12 +11,17 @@ let mainWindow: BrowserWindow | null = null
 // With CommonJS build target, __dirname is available
 
 function createWindow() {
+	// Resolve icon path. In dev we load from project root; in production resources path.
+	const iconPath = devServerUrl
+		? join(process.cwd(), 'icons', 'favicon.ico')
+		: join(process.resourcesPath, 'favicon.ico')
 	mainWindow = new BrowserWindow({
 		width: 1200,
 		height: 800,
 		minWidth: 900,
 		minHeight: 600,
 		title: 'Kiisu Blocks',
+		icon: iconPath,
 		webPreferences: {
 			preload: join(__dirname, 'preload.js'),
 			contextIsolation: true,
