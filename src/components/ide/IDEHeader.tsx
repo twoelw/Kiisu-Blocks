@@ -173,7 +173,7 @@ const IDEHeader = ({ activeTab, onTabChange }: IDEHeaderProps) => {
     <header className="h-16 bg-card border-b border-border cyber-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
         <img
-          src="/Kiisu_blocks.svg"
+          src={import.meta.env.BASE_URL + 'Kiisu_blocks.svg'}
           alt="Kiisu Blocks"
           className="h-8 w-auto select-none"
           draggable={false}

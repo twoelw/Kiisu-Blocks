@@ -179,9 +179,15 @@ All colors MUST be HSL for consistency.
 }
 
 /* Toolbox and flyout colors */
-.blocklyToolboxDiv {
-  background: linear-gradient(135deg, hsl(var(--card) / 0.4), transparent) !important;
+.blocklyToolboxDiv, /* legacy/blockly naming */
+.blocklyToolbox {  /* current toolbox root */
+  /* Glassy blurred toolbox background */
+  background: linear-gradient(135deg, hsl(var(--card) / 0.55), hsl(var(--card) / 0.15)) !important;
   border-right: 1px solid hsl(var(--border));
+  backdrop-filter: blur(10px) saturate(1.2);
+  -webkit-backdrop-filter: blur(10px) saturate(1.2);
+  background-clip: padding-box;
+  will-change: backdrop-filter;
 }
 
 .blocklyTreeRow {
@@ -196,6 +202,36 @@ All colors MUST be HSL for consistency.
   background: hsl(var(--primary) / 0.14) !important;
 }
 
+/* Category row dividers */
+.blocklyToolboxCategoryGroup .blocklyToolboxCategoryContainer + .blocklyToolboxCategoryContainer,
+.blocklyToolboxDiv .blocklyTreeRow + .blocklyTreeRow { /* fallback for older markup */
+  border-top: 1px solid hsl(var(--border) / 0.55);
+}
+
+/* Category label color states (inactive -> hover -> active) */
+.blocklyToolboxCategoryContainer .blocklyToolboxCategoryLabel,
+.blocklyTreeRow .blocklyTreeLabel {
+  /* Match regular button text color (foreground) */
+  color: hsl(var(--foreground)) !important;
+  fill: hsl(var(--foreground)) !important;
+  transition: color 120ms ease, fill 120ms ease, text-shadow 160ms ease;
+  text-shadow: none;
+}
+
+.blocklyToolboxCategoryContainer:hover .blocklyToolboxCategoryLabel,
+.blocklyTreeRow:hover .blocklyTreeLabel {
+  color: hsl(var(--foreground)) !important;
+  fill: hsl(var(--foreground)) !important;
+}
+
+/* Selected (active) category: use primary accent for distinction */
+.blocklyToolboxCategoryContainer.blocklyTreeSelected .blocklyToolboxCategoryLabel,
+.blocklyTreeSelected .blocklyTreeLabel {
+  color: hsl(var(--primary)) !important;
+  fill: hsl(var(--primary)) !important;
+  text-shadow: 0 0 4px hsl(var(--primary) / 0.6);
+}
+
 .blocklyFlyoutBackground,
 .blocklyFlyout > .blocklyFlyoutBackground,
 svg .blocklyFlyoutBackground {
@@ -203,8 +239,27 @@ svg .blocklyFlyoutBackground {
   fill-opacity: 1 !important;
 }
 
-.blocklyTreeLabel {
-  fill: hsl(var(--foreground)) !important;
+/* Glass blur for the flyout blocks panel (second panel) */
+.blocklyFlyout, /* SVG element */
+.blocklyFlyout .blocklyFlyoutBackground { /* ensure backdrop on supported browsers */
+  backdrop-filter: blur(10px) saturate(1.15);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+}
+
+/* Add a subtle inner border edge separating flyout from workspace */
+.blocklyFlyout:not(.mutatorFlyout) .blocklyFlyoutBackground {
+  stroke: hsl(var(--border) / 0.7) !important;
+  stroke-width: 1px;
+}
+
+.blocklyTreeLabel,
+.blocklyToolboxCategoryLabel { /* base typography */
+  font-family: inherit !important;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  letter-spacing: 0.25px;
+  text-transform: none;
 }
 
 .blocklyFlyoutLabelText {

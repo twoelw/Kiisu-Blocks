@@ -39,7 +39,6 @@ const defaultToolbox: Blockly.utils.toolbox.ToolboxDefinition = {
     ] },
     { kind: "category", name: "Text", contents: [{ kind: "block", type: "text" }, { kind: "block", type: "text_print" }] },
     { kind: "category", name: "Variables", custom: "VARIABLE" },
-    { kind: "sep" },
     { kind: "category", name: "App", contents: [
       { kind: "block", type: "flipper_app" },
       { kind: "block", type: "flipper_manifest" }
