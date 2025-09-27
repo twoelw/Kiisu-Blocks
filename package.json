@@ -2,6 +2,17 @@
   "name": "vite_react_shadcn_ts",
   "private": true,
   "version": "0.0.0",
+  "description": "Visual block-based IDE to build and compile Kiisu applications.",
+  "author": {
+    "name": "Kiisu",
+    "email": "mail@kiisu.io"
+  },
+  "homepage": "https://github.com/twoelw/Kiisu-Blocks",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/twoelw/Kiisu-Blocks.git"
+  },
+  "license": "Apache-2.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/ensure-dist-electron-cjs.cjs && concurrently -n tsc,vite,elec -c auto \"tsc -p tsconfig.electron.json -w\" \"vite\" \"node scripts/dev-electron.cjs\"",
