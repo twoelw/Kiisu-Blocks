@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('ufbt', {
 	ensureEnv: () => ipcRenderer.invoke('ufbt:ensureEnv') as Promise<{
 		ready?: boolean; created?: boolean; envDir?: string; homeDir?: string; python?: string; error?: string
 	}>,
+	probeEnv: () => ipcRenderer.invoke('ufbt:probeEnv') as Promise<{ envDir: string; homeDir: string; exists: boolean; needsInstall: boolean; pythonFound: boolean; error?: string }>,
 	compile: (projectPath: string) => ipcRenderer.invoke('ufbt:compile:start', projectPath) as Promise<{ id: string; started: boolean; error?: string }>,
 	compileLaunch: (projectPath: string) => ipcRenderer.invoke('ufbt:compileLaunch:start', projectPath) as Promise<{ id: string; started: boolean; error?: string }>,
 	cancel: (id: string) => ipcRenderer.invoke('ufbt:compile:cancel', id) as Promise<{ id: string; cancelled: boolean; error?: string }>,
@@ -72,6 +73,7 @@ declare global {
 		}
 		ufbt: {
 			ensureEnv: () => Promise<{ ready?: boolean; created?: boolean; envDir?: string; homeDir?: string; python?: string; error?: string }>
+			probeEnv: () => Promise<{ envDir: string; homeDir: string; exists: boolean; needsInstall: boolean; pythonFound: boolean; error?: string }>
 			compile: (projectPath: string) => Promise<{ id: string; started: boolean; error?: string }>
 			compileLaunch: (projectPath: string) => Promise<{ id: string; started: boolean; error?: string }>
 			cancel: (id: string) => Promise<{ id: string; cancelled: boolean; error?: string }>

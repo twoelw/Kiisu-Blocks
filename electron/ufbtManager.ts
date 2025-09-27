@@ -1,4 +1,4 @@
-import { app } from 'electron'
+import { app, dialog } from 'electron'
 import { existsSync, mkdirSync, writeFileSync, readdirSync } from 'node:fs'
 import { join, basename } from 'node:path'
 import { spawn, ChildProcessWithoutNullStreams } from 'node:child_process'
@@ -84,6 +84,20 @@ export async function ensureUfbtEnv(): Promise<EnsureEnvResult> {
     let created = false
 
     if (!existsSync(envDir)) {
+      // Show a one-time informational warning before starting the potentially long first-time install,
+      // unless explicitly skipped via env flag (packaged automation or tests could set KIISU_SKIP_UFBT_WARNING=1).
+      if (!process.env.KIISU_SKIP_UFBT_WARNING) {
+        try {
+          dialog.showMessageBoxSync({
+            type: 'info',
+            buttons: ['OK'],
+            defaultId: 0,
+            title: 'Installing uFBT (one-time setup)',
+            message: 'Setting up the Flipper build tool (uFBT)...',
+            detail: `Kiisu Blocks needs to download and prepare the uFBT Python environment and SDK/toolchain. This can take several minutes the very first time depending on your internet speed and hardware. Additional command windows may appear and the app UI might seem frozen temporarily. This is normal and only happens once; future compilations will be much faster.`
+          })
+        } catch { /* non-fatal */ }
+      }
       const sysPy = resolveSystemPython()
       if (!sysPy) return { ready: false, created: false, envDir, homeDir, python: '', error: 'No system Python (>=3.8) found' }
       mkdirSync(envDir, { recursive: true })
@@ -133,6 +147,42 @@ export async function ensureUfbtEnv(): Promise<EnsureEnvResult> {
     return { ready: true, created, envDir, homeDir, python: py }
   } catch (e) {
     return { ready: false, created: false, envDir: '', homeDir: '', python: '', error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
+// Lightweight probe that reports whether an install will be needed, without performing it.
+// Used by the renderer to warn the user before the potentially long first-time install.
+export async function probeUfbtEnv(): Promise<{
+  envDir: string; homeDir: string; exists: boolean; needsInstall: boolean; pythonFound: boolean; error?: string
+}> {
+  try {
+    const { projectsBase, envDir, homeDir } = resolveUfbtBaseDirs()
+    if (!existsSync(projectsBase)) mkdirSync(projectsBase, { recursive: true })
+    const py = envPythonPath(envDir)
+    const marker = join(envDir, '.installed')
+    const exists = existsSync(envDir) && existsSync(py)
+    let pythonFound = false
+    let needsInstall = true
+    if (exists) {
+      pythonFound = true
+      // Replicate importability check
+      try {
+        execSync(`"${py}" -c "import ufbt,sys;print(getattr(ufbt,'__version__','unknown'))"`, { stdio: 'ignore' })
+        needsInstall = !existsSync(marker) // if import works but marker missing we still treat as needsInstall to create marker
+      } catch {
+        needsInstall = true
+      }
+    } else {
+      // If env does not exist, we still want to know if a system python is present so we can proceed after confirmation
+      pythonFound = resolveSystemPython() != null
+      needsInstall = true
+    }
+    if (!pythonFound) {
+      return { envDir, homeDir, exists, needsInstall: true, pythonFound, error: 'No Python interpreter found for uFBT installation.' }
+    }
+    return { envDir, homeDir, exists, needsInstall, pythonFound }
+  } catch (e) {
+    return { envDir: '', homeDir: '', exists: false, needsInstall: true, pythonFound: false, error: e instanceof Error ? e.message : String(e) }
   }
 }
 
@@ -225,6 +275,7 @@ function wireStreaming(build: ActiveBuild) {
 // IPC registration helper (called from main.ts)
 export function registerUfbtIpc(ipc: typeof ipcMain) {
   ipc.handle('ufbt:ensureEnv', async () => ensureUfbtEnv())
+  ipc.handle('ufbt:probeEnv', async () => probeUfbtEnv())
   ipc.handle('ufbt:compile:start', async (_e, projectPath: string) => startBuild(projectPath))
   ipc.handle('ufbt:compileLaunch:start', async (_e, projectPath: string) => startBuildAndLaunch(projectPath))
   ipc.handle('ufbt:compile:cancel', async (_e, id: string) => cancelBuild(id))

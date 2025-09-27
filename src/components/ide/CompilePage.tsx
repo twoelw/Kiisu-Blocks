@@ -17,6 +17,7 @@ import { useCompiler } from "@/hooks/use-compiler";
 import { buildManifest } from "@/lib/manifest-builder";
 import { exportWorkspaceJson, getWorkspace } from "@/lib/workspace-export";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
 const CompilePage = () => {
@@ -39,6 +40,44 @@ int main(void) {
   const [faps, setFaps] = useState<string[]>([]);
   const logRef = useRef<HTMLPreElement | null>(null);
   const launchHandlerRef = useRef<null | (() => Promise<void>)>(null);
+  const [showFirstInstallDialog, setShowFirstInstallDialog] = useState(false);
+  const firstInstallActionRef = useRef<null | (() => Promise<void>)>(null);
+  const [probing, setProbing] = useState(false);
+
+  // Helper: ensure environment (probe first, maybe show dialog) then run cb
+  const withUfbtReady = useCallback(async (action: () => Promise<void>) => {
+    try {
+      setProbing(true);
+      // @ts-expect-error preload
+      const probe = await window.ufbt?.probeEnv?.();
+      setProbing(false);
+      if (probe?.error) {
+        toast({ title: 'uFBT unavailable', description: probe.error });
+        return;
+      }
+      if (probe && probe.needsInstall) {
+        // Show dialog – user must confirm the first-time install.
+        firstInstallActionRef.current = async () => {
+          setShowFirstInstallDialog(false);
+          // trigger ensureEnv now (will install)
+          // @ts-expect-error preload
+          const ensure = await window.ufbt?.ensureEnv?.();
+          if (!ensure?.ready) {
+            toast({ title: 'Install failed', description: ensure?.error || 'Unknown error installing uFBT' });
+            return;
+          }
+          await action();
+        };
+        setShowFirstInstallDialog(true);
+        return;
+      }
+      // Already installed; just run.
+      await action();
+    } catch (e) {
+      setProbing(false);
+      toast({ title: 'Env check failed', description: String(e instanceof Error ? e.message : e) });
+    }
+  }, [toast]);
 
   // Build a stable function that performs the same as the "Compile & Launch" button
   const compileAndLaunch = useCallback(async () => {
@@ -305,8 +344,9 @@ int main(void) {
               <Separator />
               
               <div className="flex gap-2">
-                <Button disabled={status==='running'} className="flex-1 cyber-border bg-neon-green/20 hover:bg-neon-green/40 text-neon-green border-neon-green disabled:opacity-50"
+                <Button disabled={status==='running' || probing} className="flex-1 cyber-border bg-neon-green/20 hover:bg-neon-green/40 text-neon-green border-neon-green disabled:opacity-50"
                   onClick={async () => {
+                    await withUfbtReady(async () => {
                     // Derive manifest data from any flipper_manifest block present in the workspace.
                     // Fallback to simple defaults if none found.
                     let appId = 'demo_app';
@@ -409,15 +449,18 @@ int main(void) {
                       setStatus('error');
                       setLogLines(prev => [...prev, { type: 'stderr', text: String(e instanceof Error ? e.message : e) }]);
                     }
+                    });
                   }}>
                   <Play className="h-4 w-4 mr-2" />
                   Compile
                 </Button>
-                <Button disabled={status==='running'} variant="secondary" className="flex-1 cyber-border bg-primary/20 hover:bg-primary/40 text-primary border-primary disabled:opacity-50"
+                <Button disabled={status==='running' || probing} variant="secondary" className="flex-1 cyber-border bg-primary/20 hover:bg-primary/40 text-primary border-primary disabled:opacity-50"
                   onClick={async () => {
                     // Ensure ref is up to date and run it
                     launchHandlerRef.current = compileAndLaunch;
-                    await compileAndLaunch();
+                    await withUfbtReady(async () => {
+                      await compileAndLaunch();
+                    });
                   }}>
                   <Play className="h-4 w-4 mr-2" />
                   Compile & Launch
@@ -480,6 +523,26 @@ int main(void) {
         </Card>
       </div>
       </div>
+      <Dialog open={showFirstInstallDialog} onOpenChange={setShowFirstInstallDialog}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Setting up uFBT Toolchain</DialogTitle>
+            <DialogDescription>
+              The Flipper build tool (uFBT) is not installed yet. Kiisu Blocks will now download and install the Python
+              environment and SDK/toolchain. This is a one-time setup and can take several minutes depending on your
+              internet speed and hardware. During this process additional command windows may appear and the app UI may
+              temporarily freeze. Future compilations will be much faster.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="text-sm space-y-2">
+            <p className="text-muted-foreground">Please keep the application open until the installation finishes. Once complete, your build will start automatically.</p>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setShowFirstInstallDialog(false); firstInstallActionRef.current = null; }}>Cancel</Button>
+            <Button onClick={async () => { if (firstInstallActionRef.current) await firstInstallActionRef.current(); }}>OK, Install & Continue</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
