@@ -88,7 +88,9 @@ export function repairSerialization(state: SerializedWorkspaceLike, ws: Blockly.
             try {
               const parentTmp = ws.newBlock(type);
               const input = parentTmp.getInput(name);
-              const isValue = !!input && (input as unknown as { type?: number }).type === Blockly.inputTypes.VALUE;
+              // TypeScript defs for Blockly omit the internal inputTypes map; access via any.
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any -- accessing undocumented Blockly.inputTypes
+              const isValue = !!input && (input as unknown as { type?: number }).type === (Blockly as any).inputTypes?.VALUE;
               parentTmp.dispose(false);
               if (isValue) {
                 const caps = capabilities(child.type);

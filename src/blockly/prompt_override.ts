@@ -9,7 +9,8 @@ interface DialogLike {
 
 /** Install a custom prompt override replacing the default window.prompt based implementation. */
 export function installPromptOverride() {
-  const anyDialog: DialogLike | undefined = (Blockly as any).dialog || (Blockly as any).Dialog || (Blockly as any).dialog || (Blockly as any).Dialogs;
+  // Try known dialog entry points (Blockly 7+ uses dialog, some older builds exposed Dialog)
+  const anyDialog: DialogLike | undefined = (Blockly as any).dialog || (Blockly as any).Dialog;
   if (!anyDialog) return;
   if (anyDialog.__kiisuPromptInstalled) return;
 
@@ -40,11 +41,11 @@ export function installPromptOverride() {
 
   if (anyDialog.setPrompt) {
     anyDialog.setPrompt(handler);
-  } else if ((Blockly as any).prompt) {
-    (Blockly as any).prompt = (message: string, defaultValue: string, cb: (value?: string) => void) => handler(message, defaultValue, cb);
-  } else {
-    // Last resort override global prompt usage inside Blockly (rare)
-    (Blockly as any).prompt = (m: string, d: string, cb: (v?: string) => void) => handler(m, d, cb);
+  } else if (anyDialog && typeof (anyDialog as any).prompt === 'function') {
+    // Older dialog API exposing a prompt function directly on the dialog object – safe to patch.
+    const orig = (anyDialog as any).prompt;
+    (anyDialog as any).prompt = (message: string, defaultValue: string, cb: (value?: string) => void) => handler(message, defaultValue, cb);
+    // (Optional) keep reference if we ever need to restore: (anyDialog as any).__origPrompt = orig;
   }
 
   anyDialog.__kiisuPromptInstalled = true;
