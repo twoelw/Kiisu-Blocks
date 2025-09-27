@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/ensure-dist-electron-cjs.cjs && concurrently \"tsc -p tsconfig.electron.json -w\" \"vite\" \"wait-on tcp:8080 && cross-env VITE_DEV_SERVER_URL=http://localhost:8080 electron .\"",
+    "dev": "node scripts/ensure-dist-electron-cjs.cjs && concurrently -n tsc,vite,elec -c auto \"tsc -p tsconfig.electron.json -w\" \"vite\" \"node scripts/dev-electron.cjs\"",
     "dev:main": "tsc -p tsconfig.electron.json -w",
     "build": "rimraf dist dist-electron && vite build && tsc -p tsconfig.electron.json && node scripts/ensure-dist-electron-cjs.cjs",
     "electron": "electron .",
