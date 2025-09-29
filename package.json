@@ -105,6 +105,7 @@
   "build": {
     "appId": "com.kiisu.blocks",
     "productName": "Kiisu Blocks",
+    "artifactName": "Kiisu-Blocks-Setup-${version}.exe",
     "files": [
       "dist/**",
       "dist-electron/**",
@@ -129,6 +130,18 @@
           ]
         }
       ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kiisu Blocks",
+      "license": "LICENSE",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "displayLanguageSelector": false,
+      "include": "build/installer.nsh"
     }
   }
 }
