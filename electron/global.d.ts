@@ -7,6 +7,7 @@ declare global {
 		}
 		ufbt: {
 			ensureEnv: () => Promise<{ ready?: boolean; created?: boolean; envDir?: string; homeDir?: string; python?: string; error?: string }>
+			probeEnv: () => Promise<{ envDir: string; homeDir: string; exists: boolean; needsInstall: boolean; pythonFound: boolean; error?: string }>
 			compile: (projectPath: string) => Promise<{ id: string; started: boolean; error?: string }>
 			compileLaunch: (projectPath: string) => Promise<{ id: string; started: boolean; error?: string }>
 			cancel: (id: string) => Promise<{ id: string; cancelled: boolean; error?: string }>
@@ -47,6 +48,10 @@ declare global {
 				workspaceJson?: string
 				error?: string
 			}>
+		}
+		workspaceFS: {
+			importJson: () => Promise<{ filePath?: string; raw?: string; cancelled?: boolean; error?: string }>
+			exportJson: (json: string) => Promise<{ filePath?: string; saved?: boolean; cancelled?: boolean; error?: string }>
 		}
 	}
 }

@@ -72,7 +72,15 @@ export function exportWorkspaceJson(): string {
     }
   } catch { /* ignore */ }
 
-  return JSON.stringify({ blocks: {} }, null, 2)
+  // Default workspace: manifest + app block
+  return JSON.stringify({
+    blocks: {
+      blocks: [
+        { type: 'flipper_manifest', x: 40, y: 40 },
+        { type: 'flipper_app', x: 40, y: 140, inputs: { SETUP: {}, DRAW: {}, INPUT: {}, LOOP: {} } }
+      ]
+    }
+  }, null, 2)
 }
 
 /**
