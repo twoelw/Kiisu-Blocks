@@ -1,3 +1,3 @@
-Menu Demo
+Menu Demo (ignore)
 
 Demonstrates a simple menu navigation pattern using arrow keys. Press left or right to cycle through menus, and press OK to do an action.
